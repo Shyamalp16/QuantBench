@@ -52,6 +52,7 @@ try {
         }
     }
 
+    $global:LASTEXITCODE = 0
     Write-Host "Development signature verified: $($certificate.Thumbprint)"
 }
 finally {

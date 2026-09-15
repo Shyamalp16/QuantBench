@@ -83,11 +83,13 @@ jobs:
           pnpm audit --audit-level high
           uv run pip-audit
           ./tools/inventory-licenses.ps1
+          New-Item -ItemType Directory -Path artifacts/sbom -Force | Out-Null
       - uses: anchore/sbom-action@v0.24.0
         with:
           path: .
           format: cyclonedx-json
           output-file: artifacts/sbom/quantbench.cdx.json
+          upload-artifact: false
       - uses: actions/upload-artifact@v6
         with:
           name: supply-chain-reports
