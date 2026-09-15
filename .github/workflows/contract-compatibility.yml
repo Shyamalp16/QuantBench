@@ -12,7 +12,7 @@ jobs:
   contract-compatibility:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Reject schemas before Phase 2 compatibility controls
         shell: pwsh
         run: ./tools/verify-schemas.ps1

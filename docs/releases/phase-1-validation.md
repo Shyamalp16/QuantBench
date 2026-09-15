@@ -28,10 +28,10 @@
 | Field | Value |
 |---|---|
 | Artifact | `apps/desktop/src-tauri/target/release/bundle/msi/QuantBench_0.1.0_x64_en-US.msi` |
-| Raw SHA-256 | `B4549771F4CE1495CF505648E27956B56D4A8A5CA4DA39ABD57EC14DD89D2061` |
+| Raw SHA-256 | `1581635B7BB2AF6C0CF1B6E12A5C077D16049B9ABE177BF48E74A8FAED5A5208` |
 | Signature type | Authenticode |
 | Signer | `CN=QuantBench Development Build Only` |
-| Thumbprint | `14EE1549047FC9DC4F2B0A89D56D8808DA654653` |
+| Thumbprint | `C4F9C87570112F2B6FE3D1A59D3315AD175A7A9C` |
 | Trust status | Untrusted self-signed root, expected for development only |
 | Verification | Embedded signer thumbprint matched the ephemeral certificate; PASS |
 

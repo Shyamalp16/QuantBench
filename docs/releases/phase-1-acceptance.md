@@ -20,7 +20,7 @@
 | ADR and release/incident/acceptance/change templates exist. | `docs/adr`, `docs/releases`, and `docs/governance`. |
 | Coverage and mutation reports configured. | Vitest and pytest enforce 85%; coverlet collection and four mutation-runner configurations are present. Framework-only C#/Rust bootstrap has no safety-critical mutation target in Phase 1. |
 | Clean checkout builds/tests with one command. | `pwsh ./tools/verify.ps1`; final gate passed on 2026-09-15. |
-| Empty application produces a signed development build. | `QuantBench_0.1.0_x64_en-US.msi`, raw SHA-256 `B4549771F4CE1495CF505648E27956B56D4A8A5CA4DA39ABD57EC14DD89D2061`, signer `CN=QuantBench Development Build Only`, thumbprint `14EE1549047FC9DC4F2B0A89D56D8808DA654653`. |
+| Empty application produces a signed development build. | `QuantBench_0.1.0_x64_en-US.msi`, raw SHA-256 `1581635B7BB2AF6C0CF1B6E12A5C077D16049B9ABE177BF48E74A8FAED5A5208`, signer `CN=QuantBench Development Build Only`, thumbprint `C4F9C87570112F2B6FE3D1A59D3315AD175A7A9C`. |
 
 ## Non-applicable universal gates
 

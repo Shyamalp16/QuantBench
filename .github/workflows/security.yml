@@ -15,38 +15,38 @@ jobs:
   secrets:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
 
   codeql:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
         with:
           languages: csharp,javascript-typescript,python
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/autobuild@v4
+      - uses: github/codeql-action/analyze@v4
 
   dependencies-and-sbom:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.10.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24.19.0
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.11.9
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10
         with:
           version: 0.12.14
       - uses: dtolnay/rust-toolchain@master
@@ -56,6 +56,12 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           dotnet restore QuantBench.slnx --locked-mode
+          $nugetAudit = dotnet list QuantBench.slnx package --vulnerable --include-transitive
+          if ($LASTEXITCODE -ne 0) { throw 'NuGet vulnerability audit failed.' }
+          $nugetAudit | Write-Host
+          if ($nugetAudit -match '(?im)^\s*>\s+.+\s+(Low|Moderate|High|Critical)\s+https?://') {
+            throw 'NuGet reported a vulnerable dependency.'
+          }
           uv sync --frozen --all-groups --all-packages
           cargo fetch --manifest-path apps/desktop/src-tauri/Cargo.toml --locked
           cargo install cargo-audit --version 0.22.2 --locked
@@ -63,12 +69,12 @@ jobs:
           pnpm audit --audit-level high
           uv run pip-audit
           ./tools/inventory-licenses.ps1
-      - uses: anchore/sbom-action@v0
+      - uses: anchore/sbom-action@v0.24.0
         with:
           path: .
           format: cyclonedx-json
           output-file: artifacts/sbom/quantbench.cdx.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: supply-chain-reports
           path: artifacts
