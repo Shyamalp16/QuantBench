@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0.0-rc1 |
+| Version | 1.0.0 |
 | Owner | Technical architect — Shyamal Patel |
-| Status | Candidate |
+| Status | Validation passed — awaiting owner sign-off |
 
 1. Clone the accepted revision on Windows with the documented prerequisites.
 2. Run `pwsh ./tools/verify.ps1` once after implementation is complete.
