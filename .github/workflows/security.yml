@@ -1,0 +1,75 @@
+name: security
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '17 8 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  secrets:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+
+  codeql:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: csharp,javascript-typescript,python
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
+
+  dependencies-and-sbom:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11.9
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.12.14
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.98.1
+      - shell: pwsh
+        run: |
+          pnpm install --frozen-lockfile
+          dotnet restore QuantBench.slnx --locked-mode
+          uv sync --frozen --all-groups --all-packages
+          cargo fetch --manifest-path apps/desktop/src-tauri/Cargo.toml --locked
+          cargo install cargo-audit --version 0.22.2 --locked
+          cargo audit --file apps/desktop/src-tauri/Cargo.lock
+          pnpm audit --audit-level high
+          uv run pip-audit
+          ./tools/inventory-licenses.ps1
+      - uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: artifacts/sbom/quantbench.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: supply-chain-reports
+          path: artifacts
+

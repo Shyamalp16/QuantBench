@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/services/">
+    <Project Path="services/control-service/src/QuantBench.ControlService/QuantBench.ControlService.csproj" />
+    <Project Path="services/control-service/tests/QuantBench.ControlService.Tests/QuantBench.ControlService.Tests.csproj" />
+  </Folder>
+</Solution>
+

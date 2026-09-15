@@ -1,0 +1,44 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11.9
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.12.14
+          enable-cache: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.98.1
+          targets: x86_64-pc-windows-msvc
+          components: clippy,rustfmt
+      - name: Verify foundation
+        shell: pwsh
+        run: ./tools/verify.ps1 -SkipBundle
+      - name: Verify Phase 2 schema guard
+        shell: pwsh
+        run: ./tools/verify-schemas.ps1
+

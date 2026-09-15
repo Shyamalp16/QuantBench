@@ -1,0 +1,14 @@
+[project]
+name = "quantbench-worker"
+version = "0.1.0"
+description = "Empty QuantBench quantitative worker foundation"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantbench_worker"]
+

@@ -1,0 +1,36 @@
+name: signed-msi
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signed-msi:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.98.1
+          targets: x86_64-pc-windows-msvc
+      - shell: pwsh
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @quantbench/desktop tauri build --bundles msi
+          $msi = Get-ChildItem apps/desktop/src-tauri/target/release/bundle/msi/*.msi | Select-Object -First 1
+          ./tools/sign-development-msi.ps1 -MsiPath $msi.FullName
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quantbench-development-msi
+          path: apps/desktop/src-tauri/target/release/bundle/msi/*.msi
+

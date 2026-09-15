@@ -1,0 +1,14 @@
+{
+  "stryker-config": {
+    "solution": "QuantBench.slnx",
+    "project": "services/control-service/src/QuantBench.ControlService/QuantBench.ControlService.csproj",
+    "test-projects": ["services/control-service/tests/QuantBench.ControlService.Tests/QuantBench.ControlService.Tests.csproj"],
+    "reporters": ["progress", "html", "json"],
+    "thresholds": {
+      "high": 85,
+      "low": 70,
+      "break": 70
+    }
+  }
+}
+

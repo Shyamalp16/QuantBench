@@ -1,0 +1,44 @@
+[project]
+name = "quantbench-workspace"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "mutmut==3.3.1",
+  "pip-audit==2.9.0",
+  "pyright==1.1.405",
+  "pytest==9.0.3",
+  "pytest-cov==6.2.1",
+  "ruff==0.12.12",
+]
+
+[tool.uv.workspace]
+members = ["engines/quant-worker"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "D203", "D213"]
+
+[tool.ruff.lint.per-file-ignores]
+"engines/quant-worker/src/quantbench_worker/__main__.py" = ["T201"]
+"engines/quant-worker/tests/*" = ["INP001", "S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["quantbench_worker"]
+
+[tool.pyright]
+include = ["engines/quant-worker/src", "engines/quant-worker/tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+extraPaths = ["engines/quant-worker/src"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers --cov=quantbench_worker --cov-report=term-missing --cov-fail-under=85"
+testpaths = ["engines/quant-worker/tests"]
+

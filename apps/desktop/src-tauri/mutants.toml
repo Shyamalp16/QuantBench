@@ -1,0 +1,3 @@
+exclude_globs = ["build.rs", "src/main.rs"]
+output = "../../../../artifacts/mutation/rust"
+
