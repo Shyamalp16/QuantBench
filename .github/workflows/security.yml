@@ -84,7 +84,7 @@ jobs:
           uv run pip-audit
           ./tools/inventory-licenses.ps1
           New-Item -ItemType Directory -Path artifacts/sbom -Force | Out-Null
-      - uses: anchore/sbom-action@v0.24.0
+      - uses: anchore/sbom-action@v0.24.2
         with:
           path: .
           format: cyclonedx-json
