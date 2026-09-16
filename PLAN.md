@@ -105,7 +105,7 @@ New adapters or asset classes may be proposed only after the funded pilot and on
 | Logs and telemetry | Structured JSONL through Serilog and OpenTelemetry |
 | Secrets | Windows Credential Manager and DPAPI |
 | Packaging | Signed Windows MSI |
-| CI | GitHub Actions on Windows runners |
+| GitHub automation | None: no GitHub Actions CI/CD, Dependabot, or automated pull-request bots |
 
 Technology substitutions require an approved change request. DuckDB must have a single owning process. The desktop UI must never read either database directly.
 
@@ -334,7 +334,11 @@ A validated strategy page exposes a prominent **Run Backtest** action. It opens 
 
 Submitted work enters a visible queue, exposes its current stage and progress, supports safe cancellation, and opens the result when complete. Every specification is hashed so that the strategy, parameter set, dataset, and execution assumptions reproduce the same result. A successful backtest never promotes a strategy automatically.
 
-## 8. Delivery model and universal quality gate
+## 8. Delivery model and phase-end validation
+
+GitHub is a source-code host, not an automated delivery gate. The repository must not run GitHub Actions CI/CD, Dependabot version-update jobs, auto-merge bots, or other automated pull-request workflows. Code changes and merges do not trigger remote builds, tests, scans, or release jobs. Keep the default branch `master`; do not require GitHub status checks, bot approvals, or review rules to merge. Releases and phase tags are created manually by the project owner.
+
+Run the complete applicable validation suite locally once, after implementation for a phase is complete and before its acceptance decision. Do not run tests, builds, or scans after each edit, commit, pull request, or merge. Validation output is evidence for the owner; it does not independently classify bugs or decide whether a change is accepted. Shyamal Patel decides whether observed behavior is a bug, its severity, and its disposition. Record the result and any accepted limitations in the phase report. This does not waive explicit legal, account, or live-trading safety restrictions in this plan.
 
 ### 8.1 Phase governance
 
@@ -344,7 +348,7 @@ Submitted work enters a visible queue, exposes its current stage and progress, s
 - A phase is complete only after its acceptance record is committed, approved, tagged, and immutable.
 - A defect or discovery that invalidates an earlier gate reopens that gate and blocks dependent promotion.
 
-### 8.2 Universal definition of done
+### 8.2 Phase acceptance definition of done
 
 Every phase must satisfy all applicable items below:
 
@@ -360,7 +364,7 @@ Every phase must satisfy all applicable items below:
 - User-facing failure messages are actionable.
 - Documentation, runbooks, threat model, and risk register are current.
 - A demonstration artifact and signed acceptance report exist.
-- No unresolved P0 or P1 defect exists.
+- The acceptance report lists observed failures and limitations; the project owner decides bug status, severity, and disposition. Any owner-accepted exception is recorded explicitly. Explicit legal, account, and live-trading safety restrictions remain binding.
 - The completed phase is released as an immutable tag.
 - A correctly formatted externally AI-authored strategy imports without manual code changes.
 - Unsafe imported code is rejected with a precise, actionable explanation.
@@ -408,17 +412,17 @@ Where an item is genuinely not applicable, the acceptance report must state why;
 
 - Create the required monorepo structure.
 - Configure formatting, linting, strict compilation, and static analysis for C#, Python, TypeScript, and Rust/Tauri components.
-- Configure signed commits, branch protection, required reviews, and protected releases.
-- Add Windows CI for every language and package.
-- Add lockfiles, secret scanning, vulnerability scanning, and automated license inventory.
+- Keep GitHub configuration minimal: `master` is the sole working branch; do not add branch rulesets, required pull-request reviews/status checks, CODEOWNERS gates, Dependabot, GitHub Actions, or other repository bots.
+- Add no GitHub-hosted CI/CD, automatic builds, deployment workflows, or per-PR/per-merge validation.
+- Add lockfiles for reproducible local builds. Do not add automated secret, vulnerability, or license scans to GitHub workflows.
 - Establish architecture decision records and release, incident, acceptance, and change-request templates.
-- Configure code-coverage and mutation-testing reports.
+- Keep any applicable test, coverage, mutation, formatting, lint, and static-analysis tools runnable locally; invoke the complete applicable validation once at phase end, not on every change or merge.
 
 **Exit gate:**
 
-- A clean checkout builds and tests with one documented command.
-- No secret exists in source control or build artifacts.
-- CI blocks failed formatting, linting, compilation, tests, vulnerabilities, and schema incompatibility.
+- A clean checkout can be built and validated locally with one documented command when the owner runs it at phase acceptance.
+- The owner reviews secrets, build artifacts, validation output, and known limitations as part of the phase-end acceptance decision.
+- No GitHub CI/CD workflow, automated scan, or bot blocks or runs on a commit, pull request, or merge.
 - The empty application produces a signed development build.
 
 ### Phase 2 — Contracts, identifiers, and event ledger
