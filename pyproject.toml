@@ -11,7 +11,7 @@ dev = [
   "pyright==1.1.414",
   "pytest==9.0.3",
   "pytest-cov==6.2.1",
-  "ruff==0.12.12",
+  "ruff==0.16.7",
 ]
 
 [tool.uv.workspace]
