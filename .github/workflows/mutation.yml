@@ -42,7 +42,7 @@ jobs:
           dotnet stryker --config-file stryker-config.json
           uv run mutmut run
           cargo mutants --manifest-path apps/desktop/src-tauri/Cargo.toml --output artifacts/mutation/rust
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: mutation-reports
